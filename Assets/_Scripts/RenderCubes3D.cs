@@ -9,26 +9,6 @@ using UnityEditor;
 public class RenderCubes3D : MonoBehaviour
 {
     private const int gridMinSize = 10;
-    Color[] baseColors = new Color[] { Color.red, Color.magenta, Color.blue, Color.cyan, Color.gray, Color.white };
-    private float[] cubeVerts = new float[]
-    {
-           -1f, -1f, 1f, 
-            1f, -1f, 1f, 
-            -1f, 1f, 1f, 
-            1f, 1f, 1f, 
-            -1f, 1f, -1f, 
-            1f, 1f, -1f, 
-            -1f, -1f, -1f, 
-            1f, -1f, -1f
-    };
-    private int[] polyIdx = new int[24] { 0, 1, 3, -3, 2, 3, 5, -5, 4, 5, 7, -7, 6, 7, 1, -1, 1, 7, 5, -4, 6, 0, 2, -5 };
-    private int[] cubeTris;
-    private Vector3[] cubeVertices;
-
-    Vector3[] newVertices;
-    Vector2[] newUV;
-    int[] newTriangles;
-
 
     public Material baseMaterial;
 
@@ -53,18 +33,18 @@ public class RenderCubes3D : MonoBehaviour
         CreateCubeLayers(transform.position);
         playerObject = GameObject.FindGameObjectWithTag("Player");
 
-        prevGridPosL1 = WorldToGrid(playerObject.transform.position, gridMinSize);
-        newGridPosL1 = WorldToGrid(playerObject.transform.position, gridMinSize);
-        prevGridPosL2 = WorldToGrid(playerObject.transform.position, gridMinSize * 3);
-        newGridPosL2 = WorldToGrid(playerObject.transform.position, gridMinSize * 3);
-        prevGridPosL3 = WorldToGrid(playerObject.transform.position, gridMinSize * 9);
-        newGridPosL3 = WorldToGrid(playerObject.transform.position, gridMinSize * 9);
+        prevGridPosL1 = GridUtils.WorldToGrid(playerObject.transform.position, gridMinSize);
+        newGridPosL1 = GridUtils.WorldToGrid(playerObject.transform.position, gridMinSize);
+        prevGridPosL2 = GridUtils.WorldToGrid(playerObject.transform.position, gridMinSize * 3);
+        newGridPosL2 = GridUtils.WorldToGrid(playerObject.transform.position, gridMinSize * 3);
+        prevGridPosL3 = GridUtils.WorldToGrid(playerObject.transform.position, gridMinSize * 9);
+        newGridPosL3 = GridUtils.WorldToGrid(playerObject.transform.position, gridMinSize * 9);
     }
 
     void CreateCubeLayers(Vector3 targetPosition)
     {
         int colorCounter = 0;
-        GridPos pos = WorldToGrid(targetPosition, gridMinSize);
+        GridPos pos = GridUtils.WorldToGrid(targetPosition, gridMinSize);
         GridPos vpos;
         GridPos gpos;
 
@@ -80,13 +60,13 @@ public class RenderCubes3D : MonoBehaviour
                     gpos = new GridPos(pos.x + x, pos.y + y, pos.z + z);
 
                     vpos = new GridPos(pos.x + x * gridMinSize * 9, pos.y + y * gridMinSize * 9, pos.z + z * gridMinSize * 9);
-                    L3Dict.Add(gpos.ToKeyString(), createRenderCube(vpos, new Vector3(45f, 0.1f, 45f), baseColors[colorCounter % 2 + 4]));
+                    L3Dict.Add(gpos.ToKeyString(), GridUtils.CreateRenderCube(vpos, new Vector3(45f, 0.1f, 45f), GridUtils.BaseColors[colorCounter % 2 + 4]));
 
                     vpos = new GridPos(pos.x + x * gridMinSize * 3, pos.y + y * gridMinSize * 3, pos.z + z * gridMinSize * 3);
-                    L2Dict.Add(gpos.ToKeyString(), createRenderCube(vpos, new Vector3(15f, 1.5f, 15f), baseColors[colorCounter % 2 + 2]));
+                    L2Dict.Add(gpos.ToKeyString(), GridUtils.CreateRenderCube(vpos, new Vector3(15f, 1.5f, 15f), GridUtils.BaseColors[colorCounter % 2 + 2]));
                                         
                     vpos = new GridPos(pos.x + x * gridMinSize, pos.y + y * gridMinSize, pos.z + z * gridMinSize);
-                    L1Dict.Add(gpos.ToKeyString(), createRenderCube(vpos, new Vector3(5f, 3f, 5f), baseColors[colorCounter++ % 2]));
+                    L1Dict.Add(gpos.ToKeyString(), GridUtils.CreateRenderCube(vpos, new Vector3(5f, 3f, 5f), GridUtils.BaseColors[colorCounter++ % 2]));
                 }
             }
         }        
@@ -145,7 +125,7 @@ public class RenderCubes3D : MonoBehaviour
 
     void UpdateGridCubes(ref GridPos prevGridPosL, ref GridPos newGridPosL, int gridSize, Dictionary<String, GameObject> LDict, int level)
     {
-        newGridPosL = WorldToGrid(playerObject.transform.position, gridSize);
+        newGridPosL = GridUtils.WorldToGrid(playerObject.transform.position, gridSize);
         if (!prevGridPosL.Equals(newGridPosL))
         {
             GridPos deltaPos = prevGridPosL.Delta(newGridPosL);
@@ -269,77 +249,5 @@ public class RenderCubes3D : MonoBehaviour
         UpdateGridCubes(ref prevGridPosL1, ref newGridPosL1, gridMinSize, L1Dict, 1);
         UpdateGridCubes(ref prevGridPosL2, ref newGridPosL2, gridMinSize * 3, L2Dict, 2);
         UpdateGridCubes(ref prevGridPosL3, ref newGridPosL3, gridMinSize * 9, L3Dict, 3);
-    }
-
-
-    private GameObject createRenderCube(GridPos pos, Vector3 scale, Color color)
-    {
-        newVertices = createVertices(scale);
-        newTriangles = createTriangles();
-
-        var obj = new GameObject("MeshObject");
-        obj.AddComponent<MeshRenderer>();
-        obj.AddComponent<MeshFilter>();
-        obj.transform.position = new Vector3(pos.x, pos.y, pos.z);
-
-        var m = new Mesh();
-        obj.GetComponent<MeshFilter>().mesh = m;
-        m.vertices = newVertices;
-        m.triangles = newTriangles;
-
-
-        obj.GetComponent<MeshRenderer>().material = baseMaterial;
-        obj.GetComponent<MeshRenderer>().material.color = color;
-        return obj;
-    }
-
-    private Vector3[] createVertices(Vector3 scale)
-    {
-        int idx;
-        var vt = new List<Vector3>();
-
-        // Order Vertices per QUAD - 0, 2, 1, 3
-        for (var i = 0; i < polyIdx.Length; i += 4)
-        {
-            idx = (polyIdx[i] >= 0) ? polyIdx[i] * 3 : ((polyIdx[i] * -1) - 1) * 3;
-            vt.Add(new Vector3(-(float)cubeVerts[idx] * scale.x, (float)cubeVerts[idx + 1] * scale.y, (float)cubeVerts[idx + 2] * scale.z));
-
-            idx = (polyIdx[i + 2] >= 0) ? polyIdx[i + 2] * 3 : ((polyIdx[i + 2] * -1) - 1) * 3;
-            vt.Add(new Vector3(-(float)cubeVerts[idx] * scale.x, (float)cubeVerts[idx + 1] * scale.y, (float)cubeVerts[idx + 2] * scale.z));
-
-            idx = (polyIdx[i + 1] >= 0) ? polyIdx[i + 1] * 3 : ((polyIdx[i + 1] * -1) - 1) * 3;
-            vt.Add(new Vector3(-(float)cubeVerts[idx] * scale.x, (float)cubeVerts[idx + 1] * scale.y, (float)cubeVerts[idx + 2] * scale.z));
-
-            idx = (polyIdx[i + 3] >= 0) ? polyIdx[i + 3] * 3 : ((polyIdx[i + 3] * -1) - 1) * 3;
-            vt.Add(new Vector3(-(float)cubeVerts[idx] * scale.x, (float)cubeVerts[idx + 1] * scale.y, (float)cubeVerts[idx + 2] * scale.z));
-        }
-        return vt.ToArray();
-    }
-
-    private int[] createTriangles()
-    {
-        var vl = new List<int>();
-
-        //Create sequence based on Quads creating 2 triagles in this vertex sequence { 0, 1, 2, 0, 3, 1 }
-        for (int i = 0; i < 24; i += 4)
-        {
-            vl.Add(i);
-            vl.Add(i + 1);
-            vl.Add(i + 2);
-
-            vl.Add(i);
-            vl.Add(i + 3);
-            vl.Add(i + 1);
-        }
-        return vl.ToArray();
-    }
-
-    // Grid Handling Functions
-    private GridPos WorldToGrid(Vector3 worldPosition, int gridSize)
-    {
-        var x = Mathf.RoundToInt(worldPosition.x / gridSize);
-        var y = Mathf.RoundToInt(worldPosition.y / gridSize);
-        var z = Mathf.RoundToInt(worldPosition.z / gridSize);
-        return new GridPos(x, y, z);
     }
 }

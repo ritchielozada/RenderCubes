@@ -8,7 +8,7 @@ using UnityEditor;
 
 
 [Serializable]
-class GridPos
+public class GridPos
 {
     public int x { get; set; }
     public int y { get; set; }
