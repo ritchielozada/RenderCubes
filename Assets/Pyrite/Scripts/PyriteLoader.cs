@@ -214,11 +214,11 @@
                 max -= pyriteLevel.WorldCubeScale/2;
                 var newCameraPosition = min + (max - min)/2.0f;
                 newCameraPosition += new Vector3(0, 0, (max - min).z*1.4f);
-                CameraRig.transform.position = newCameraPosition;
-
-                CameraRig.transform.rotation = Quaternion.Euler(0, 180, 0);
-
-                DebugLog("Done moving camera");
+                
+                
+                //CameraRig.transform.position = newCameraPosition;
+                //CameraRig.transform.rotation = Quaternion.Euler(0, 180, 0);
+                //DebugLog("Done moving camera");
             }
             DebugLog("-Load()");
         }
