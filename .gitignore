@@ -13,83 +13,8 @@
 /*.pidb
 /*.booproj
 
-# =========================
-# Unity3D Excludes
-# =========================
-[Ll]ibrary/
-[Oo]bj/
-[Tt]emp/
-[Bb]uild/
+#Unity3D Generated File On Crash Reports
+sysinfo.txt
 
-# Additional User Defined
-UnityGenerated/
-Assets/AssetStoretools*
-
-# GitHub Defined
-*.csproj
-*.unityproj
-*.sln
-*.suo
-*.tmp
-*.user
-*.userprefs
-*.pidb
-*.booproj
-
-# Additional User Defined
-[Ee]xported[Oo]bj/
-*.svd
-
-# Generated meta files
-*.pidb.meta
-
-# Unity3D Generated File On Crash Reports 
-sysinfo.txt 
-
-
-# =========================
-# Operating System Files
-# =========================
-
-# OSX
-# =========================
-
-.DS_Store
-.AppleDouble
-.LSOverride
-
-# Thumbnails
-._*
-
-# Files that might appear on external disk
-.Spotlight-V100
-.Trashes
-
-# Directories potentially created on remote AFP share
-.AppleDB
-.AppleDesktop
-Network Trash Folder
-Temporary Items
-.apdisk
-
-# Windows
-# =========================
-
-# Windows image file caches
-Thumbs.db
-ehthumbs.db
-
-# Folder config file
-Desktop.ini
-
-# Recycle Bin used on file shares
-$RECYCLE.BIN/
-
-# Windows Installer files
-*.cab
-*.msi
-*.msm
-*.msp
-
-# Windows shortcuts
-*.lnk
+#Unity3D
+#*.meta
