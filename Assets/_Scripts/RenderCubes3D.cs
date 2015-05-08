@@ -29,9 +29,9 @@ public class RenderCubes3D : MonoBehaviour
 
     // Use this for initialization
     void Start()
-    {
-        CreateCubeLayers(transform.position);
+    {        
         playerObject = GameObject.FindGameObjectWithTag("Player");
+        CreateCubeLayers(playerObject.transform.position);
 
         prevGridPosL1 = GridUtils.WorldToGrid(playerObject.transform.position, gridMinSize);
         newGridPosL1 = GridUtils.WorldToGrid(playerObject.transform.position, gridMinSize);
@@ -48,25 +48,28 @@ public class RenderCubes3D : MonoBehaviour
         GridPos vpos;
         GridPos gpos;
 
-
         for (int z = -1; z <= 1; z++)
         {
             for (int x = -1; x <= 1; x++)
-            {
+            {                
                 for (int y = -1; y <= 1; y++)
                 {                                        
-                    //Debug.Log(String.Format("{0} {1} {2}", gpos.x, gpos.y, gpos.z));
-                    
-                    gpos = new GridPos(pos.x + x, pos.y + y, pos.z + z);
+                    //Debug.Log(String.Format("{0} {1} {2}", gpos.x, gpos.y, gpos.z));                    
 
-                    vpos = new GridPos(pos.x + x * gridMinSize * 9, pos.y + y * gridMinSize * 9, pos.z + z * gridMinSize * 9);
+                    pos = GridUtils.WorldToGrid(targetPosition, gridMinSize * 9);
+                    gpos = new GridPos(pos.x + x, pos.y + y, pos.z + z);
+                    vpos = new GridPos(gpos.x * gridMinSize * 9, gpos.y * gridMinSize * 9, gpos.z * gridMinSize * 9);
                     L3Dict.Add(gpos.ToKeyString(), GridUtils.CreateRenderCube(vpos, new Vector3(45f, 0.1f, 45f), GridUtils.BaseColors[colorCounter % 2 + 4]));
 
-                    vpos = new GridPos(pos.x + x * gridMinSize * 3, pos.y + y * gridMinSize * 3, pos.z + z * gridMinSize * 3);
-                    L2Dict.Add(gpos.ToKeyString(), GridUtils.CreateRenderCube(vpos, new Vector3(15f, 1.5f, 15f), GridUtils.BaseColors[colorCounter % 2 + 2]));
-                                        
-                    vpos = new GridPos(pos.x + x * gridMinSize, pos.y + y * gridMinSize, pos.z + z * gridMinSize);
-                    L1Dict.Add(gpos.ToKeyString(), GridUtils.CreateRenderCube(vpos, new Vector3(5f, 3f, 5f), GridUtils.BaseColors[colorCounter++ % 2]));
+                    pos = GridUtils.WorldToGrid(targetPosition, gridMinSize * 3);
+                    gpos = new GridPos(pos.x + x, pos.y + y, pos.z + z);
+                    vpos = new GridPos(gpos.x * gridMinSize * 3, gpos.y * gridMinSize * 3, gpos.z * gridMinSize * 3);
+                    L2Dict.Add(gpos.ToKeyString(), GridUtils.CreateRenderCube(vpos, new Vector3(15f, 1f, 15f), GridUtils.BaseColors[colorCounter % 2 + 2]));
+
+                    pos = GridUtils.WorldToGrid(targetPosition, gridMinSize);
+                    gpos = new GridPos(pos.x + x, pos.y + y, pos.z + z);
+                    vpos = new GridPos(gpos.x * gridMinSize, gpos.y * gridMinSize, gpos.z * gridMinSize);
+                    L1Dict.Add(gpos.ToKeyString(), GridUtils.CreateRenderCube(vpos, new Vector3(5f, 2f, 5f), GridUtils.BaseColors[colorCounter++ % 2]));
                 }
             }
         }        
