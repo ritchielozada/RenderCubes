@@ -75,7 +75,7 @@ public class GridUtils
         return vl.ToArray();
     }
 
-    public static GameObject CreateRenderCube(GridPos pos, Vector3 scale, Color color)
+    public static GameObject CreateRenderCube(GridPos pos, Vector3 scale, Color color, GameObject parent)
     {
         newVertices = CreateVertices(scale);
         newTriangles = CreateTriangles();
@@ -83,7 +83,10 @@ public class GridUtils
         var obj = new GameObject("MeshObject");
         obj.AddComponent<MeshRenderer>();
         obj.AddComponent<MeshFilter>();
+        obj.AddComponent<BoxCollider>();
         obj.transform.position = new Vector3(pos.x, pos.y, pos.z);
+
+        obj.GetComponent<BoxCollider>().size = new Vector3(scale.x * 2, scale.y * 2, scale.z * 2);
 
         var m = new Mesh();
         obj.GetComponent<MeshFilter>().mesh = m;
@@ -94,6 +97,11 @@ public class GridUtils
 
         obj.GetComponent<MeshRenderer>().material = baseMaterial;
         obj.GetComponent<MeshRenderer>().material.color = color;
+
+        obj.GetComponent<MeshRenderer>().enabled = false;
+        obj.transform.parent = parent.transform;
+        
+        //obj.GetComponent<MeshRenderer>().enabled = false;
         return obj;
     } 
 

@@ -4,7 +4,7 @@ using System.Collections;
 
 public class GenerateSampleWorld : MonoBehaviour
 {
-    private const int gridMinSize = 10;
+    private const int gridMinSize = 100;
 
     void Start()
     {
