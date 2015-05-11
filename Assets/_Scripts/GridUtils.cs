@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class GridUtils
 {
-    public static Material baseMaterial;
+    public static Material BaseMaterial;
     public static Color[] BaseColors = new Color[] { Color.red, Color.magenta, Color.blue, Color.cyan, Color.gray, Color.white };
 
     static float[] cubeVerts = new float[]
@@ -95,13 +95,13 @@ public class GridUtils
         //m.uv = UVDATA
 
 
-        obj.GetComponent<MeshRenderer>().material = baseMaterial;
-        obj.GetComponent<MeshRenderer>().material.color = color;
+        obj.GetComponent<MeshRenderer>().material = BaseMaterial;
+        //obj.GetComponent<MeshRenderer>().material.color = color;
 
+        // VISIBILITY
         obj.GetComponent<MeshRenderer>().enabled = false;
         obj.transform.parent = parent.transform;
-        
-        //obj.GetComponent<MeshRenderer>().enabled = false;
+                
         return obj;
     } 
 

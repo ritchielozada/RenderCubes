@@ -13,7 +13,7 @@ GameObject:
   - 23: {fileID: 2351756}
   - 114: {fileID: 11443790}
   m_Layer: 0
-  m_Name: TransparentPlaceholderCube
+  m_Name: Placeholder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -41,7 +41,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_Materials:
-  - {fileID: 2100000, guid: 3544bc00a438d2d4982f99446e25bd5f, type: 2}
+  - {fileID: 2100000, guid: 90cdd0c6356fc73469b2266ecf936155, type: 2}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_UseLightProbes: 1

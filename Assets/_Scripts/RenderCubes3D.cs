@@ -8,9 +8,11 @@ using UnityEditor;
 
 public class RenderCubes3D : MonoBehaviour
 {
-    private const int gridMinSize = 50;
+    public int GridMinSize = 50;
 
-    public Material baseMaterial;
+    public Material BaseMaterial;
+    public GameObject LocatorCube;
+    public bool EnabledTracking = false;
 
     private GridPos prevGridPosL1;
     private GridPos newGridPosL1;
@@ -30,27 +32,33 @@ public class RenderCubes3D : MonoBehaviour
 
     // Use this for initialization
     void Start()
-    {
-        worldObject = new GameObject("WorldObject");
-        worldObject.transform.position = new Vector3(0f, 0f, 0f);
-
+    {        
         playerObject = GameObject.FindGameObjectWithTag("Player");
-        CreateCubeLayers(playerObject.transform.position);
+        //CreateCubeLayers(playerObject.transform.position);
 
-        prevGridPosL1 = GridUtils.WorldToGrid(playerObject.transform.position, gridMinSize);
-        newGridPosL1 = GridUtils.WorldToGrid(playerObject.transform.position, gridMinSize);
-        prevGridPosL2 = GridUtils.WorldToGrid(playerObject.transform.position, gridMinSize * 3);
-        newGridPosL2 = GridUtils.WorldToGrid(playerObject.transform.position, gridMinSize * 3);
-        prevGridPosL3 = GridUtils.WorldToGrid(playerObject.transform.position, gridMinSize * 9);
-        newGridPosL3 = GridUtils.WorldToGrid(playerObject.transform.position, gridMinSize * 9);
+        prevGridPosL1 = GridUtils.WorldToGrid(playerObject.transform.position, GridMinSize);
+        newGridPosL1 = GridUtils.WorldToGrid(playerObject.transform.position, GridMinSize);
+        prevGridPosL2 = GridUtils.WorldToGrid(playerObject.transform.position, GridMinSize * 3);
+        newGridPosL2 = GridUtils.WorldToGrid(playerObject.transform.position, GridMinSize * 3);
+        prevGridPosL3 = GridUtils.WorldToGrid(playerObject.transform.position, GridMinSize * 9);
+        newGridPosL3 = GridUtils.WorldToGrid(playerObject.transform.position, GridMinSize * 9);
     }
 
-    void CreateCubeLayers(Vector3 targetPosition)
+    public void CreateCubeLayers(Vector3 targetPosition)
     {
+        GridUtils.BaseMaterial = BaseMaterial;
+
         int colorCounter = 0;
-        GridPos pos = GridUtils.WorldToGrid(targetPosition, gridMinSize);
+        GridPos pos = GridUtils.WorldToGrid(targetPosition, GridMinSize);
         GridPos vpos;
         GridPos gpos;
+        float cubesize;
+
+        worldObject = new GameObject("WorldRenderObject");
+        worldObject.transform.position = targetPosition;
+        GameObject locObj;
+        
+
 
         for (int z = -1; z <= 1; z++)
         {
@@ -60,26 +68,40 @@ public class RenderCubes3D : MonoBehaviour
                 {                                        
                     //Debug.Log(String.Format("{0} {1} {2}", gpos.x, gpos.y, gpos.z));                    
 
-                    pos = GridUtils.WorldToGrid(targetPosition, gridMinSize * 9);
+                    pos = GridUtils.WorldToGrid(targetPosition, GridMinSize * 9);
                     gpos = new GridPos(pos.x + x, pos.y + y, pos.z + z);
-                    vpos = new GridPos(gpos.x * gridMinSize * 9, gpos.y * gridMinSize * 9, gpos.z * gridMinSize * 9);
+                    vpos = new GridPos(gpos.x * GridMinSize * 9, gpos.y * GridMinSize * 9, gpos.z * GridMinSize * 9);
+                    cubesize = GridMinSize * 9 / 2f ;
+                    
                     //L3Dict.Add(gpos.ToKeyString(), GridUtils.CreateRenderCube(vpos, new Vector3(45f, 0.1f, 45f), GridUtils.BaseColors[colorCounter % 2 + 4], worldObject));
-                    L3Dict.Add(gpos.ToKeyString(), GridUtils.CreateRenderCube(vpos, new Vector3(225f, 225f, 225f), GridUtils.BaseColors[colorCounter % 2 + 4], worldObject));
+                    L3Dict.Add(gpos.ToKeyString(), GridUtils.CreateRenderCube(vpos, new Vector3(cubesize, cubesize, cubesize), GridUtils.BaseColors[colorCounter % 2 + 4], worldObject));
+                    locObj = Instantiate(LocatorCube, vpos.ToVector3(), Quaternion.identity) as GameObject;
+                    locObj.transform.parent = worldObject.transform;
 
-                    pos = GridUtils.WorldToGrid(targetPosition, gridMinSize * 3);
+                    pos = GridUtils.WorldToGrid(targetPosition, GridMinSize * 3);
                     gpos = new GridPos(pos.x + x, pos.y + y, pos.z + z);
-                    vpos = new GridPos(gpos.x * gridMinSize * 3, gpos.y * gridMinSize * 3, gpos.z * gridMinSize * 3);
+                    vpos = new GridPos(gpos.x * GridMinSize * 3, gpos.y * GridMinSize * 3, gpos.z * GridMinSize * 3);
+                    cubesize = GridMinSize * 3 / 2f;
+                    
                     //L2Dict.Add(gpos.ToKeyString(), GridUtils.CreateRenderCube(vpos, new Vector3(15f, 1f, 15f), GridUtils.BaseColors[colorCounter % 2 + 2], worldObject));
-                    L2Dict.Add(gpos.ToKeyString(), GridUtils.CreateRenderCube(vpos, new Vector3(75f, 75f, 75f), GridUtils.BaseColors[colorCounter % 2 + 2], worldObject));
+                    L2Dict.Add(gpos.ToKeyString(), GridUtils.CreateRenderCube(vpos, new Vector3(cubesize, cubesize, cubesize), GridUtils.BaseColors[colorCounter % 2 + 2], worldObject));
+                    locObj = Instantiate(LocatorCube, vpos.ToVector3(), Quaternion.identity) as GameObject;
+                    locObj.transform.parent = worldObject.transform;
 
-                    pos = GridUtils.WorldToGrid(targetPosition, gridMinSize);
+                    pos = GridUtils.WorldToGrid(targetPosition, GridMinSize);
                     gpos = new GridPos(pos.x + x, pos.y + y, pos.z + z);
-                    vpos = new GridPos(gpos.x * gridMinSize, gpos.y * gridMinSize, gpos.z * gridMinSize);
+                    vpos = new GridPos(gpos.x * GridMinSize, gpos.y * GridMinSize, gpos.z * GridMinSize);
+                    cubesize = GridMinSize / 2f;
+                    
                     //L1Dict.Add(gpos.ToKeyString(), GridUtils.CreateRenderCube(vpos, new Vector3(5f, 2f, 5f), GridUtils.BaseColors[colorCounter++ % 2], worldObject));
-                    L1Dict.Add(gpos.ToKeyString(), GridUtils.CreateRenderCube(vpos, new Vector3(25f, 25f, 25f), GridUtils.BaseColors[colorCounter++ % 2], worldObject));
+                    L1Dict.Add(gpos.ToKeyString(), GridUtils.CreateRenderCube(vpos, new Vector3(cubesize, cubesize, cubesize), GridUtils.BaseColors[colorCounter++ % 2], worldObject));
+                    locObj = Instantiate(LocatorCube, vpos.ToVector3(), Quaternion.identity) as GameObject;
+                    locObj.transform.parent = worldObject.transform;
                 }
             }
-        }        
+        }
+        EnabledTracking = true;
+
     }
 
     IEnumerator MoveObjectToPosition(GameObject obj, Vector3 targetPosition, float step, float height)
@@ -237,27 +259,30 @@ public class RenderCubes3D : MonoBehaviour
 
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.Keypad8))
+        if (EnabledTracking)
         {
-            playerObject.transform.Translate(new Vector3(0f, gridMinSize, gridMinSize));
-        }
-        if (Input.GetKeyDown(KeyCode.Keypad2))
-        {
-            playerObject.transform.Translate(new Vector3(0f, -gridMinSize, -gridMinSize));
-        }
+            if (Input.GetKeyDown(KeyCode.Keypad8))
+            {
+                playerObject.transform.Translate(new Vector3(0f, GridMinSize, GridMinSize));
+            }
+            if (Input.GetKeyDown(KeyCode.Keypad2))
+            {
+                playerObject.transform.Translate(new Vector3(0f, -GridMinSize, -GridMinSize));
+            }
 
 
-        if (Input.GetKeyDown(KeyCode.Keypad9))
-        {
-            playerObject.transform.Translate(new Vector3(gridMinSize, gridMinSize, gridMinSize));
-        }
-        if (Input.GetKeyDown(KeyCode.Keypad1))
-        {
-            playerObject.transform.Translate(new Vector3(-gridMinSize, -gridMinSize, -gridMinSize));
-        }
+            if (Input.GetKeyDown(KeyCode.Keypad9))
+            {
+                playerObject.transform.Translate(new Vector3(GridMinSize, GridMinSize, GridMinSize));
+            }
+            if (Input.GetKeyDown(KeyCode.Keypad1))
+            {
+                playerObject.transform.Translate(new Vector3(-GridMinSize, -GridMinSize, -GridMinSize));
+            }
 
-        UpdateGridCubes(ref prevGridPosL1, ref newGridPosL1, gridMinSize, L1Dict, 1);
-        UpdateGridCubes(ref prevGridPosL2, ref newGridPosL2, gridMinSize * 3, L2Dict, 2);
-        UpdateGridCubes(ref prevGridPosL3, ref newGridPosL3, gridMinSize * 9, L3Dict, 3);
+            UpdateGridCubes(ref prevGridPosL1, ref newGridPosL1, GridMinSize, L1Dict, 1);
+            UpdateGridCubes(ref prevGridPosL2, ref newGridPosL2, GridMinSize * 3, L2Dict, 2);
+            UpdateGridCubes(ref prevGridPosL3, ref newGridPosL3, GridMinSize * 9, L3Dict, 3);
+        }
     }
 }

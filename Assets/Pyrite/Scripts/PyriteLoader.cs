@@ -13,6 +13,8 @@
 
     public class PyriteLoader : MonoBehaviour
     {
+        public GameObject RenderCubes;
+
         public string ModelVersion = "V2";
         private readonly Stopwatch _sw = Stopwatch.StartNew();
 
@@ -31,6 +33,8 @@
         private readonly Dictionary<string, Texture2D> _textureCache = new Dictionary<string, Texture2D>();
 
         public GameObject CameraRig;
+        public GameObject LocatorCube;
+
         private int _colorSelector;
         public int DetailLevel = 6;
         public bool EnableDebugLogs = false;
@@ -166,6 +170,8 @@
             var pyriteLevel =
                 pyriteQuery.DetailLevels[DetailLevel];
 
+         
+
             var allOctCubes = pyriteQuery.DetailLevels[DetailLevel].Octree.AllItems();
 
             foreach (var octCube in allOctCubes)
@@ -181,11 +187,17 @@
                     // Move cube to the orientation we want also move it up since the model is around -600
                     var g =
                         (GameObject)
-                            Instantiate(PlaceHolderCube, new Vector3(-cubePos.x, cubePos.z + 600, -cubePos.y),
+                            //Instantiate(PlaceHolderCube, new Vector3(-cubePos.x, cubePos.z + 600, -cubePos.y),
+                            //Instantiate(PlaceHolderCube, new Vector3(-cubePos.x, cubePos.z, -cubePos.y),
+                            Instantiate(PlaceHolderCube, new Vector3(cubePos.x, cubePos.y, cubePos.z),
                                 Quaternion.identity);
 
+                    var loc = Instantiate(LocatorCube, new Vector3(cubePos.x, cubePos.y, cubePos.z), Quaternion.identity) as GameObject;
+                    loc.transform.parent = gameObject.transform;
+                                        
+
                     g.transform.parent = gameObject.transform;
-                    g.GetComponent<MeshRenderer>().material.color = _colorList[_colorSelector%_colorList.Length];
+                    //g.GetComponent<MeshRenderer>().material.color = _colorList[_colorSelector%_colorList.Length];
                     g.GetComponent<IsRendered>().SetCubePosition(x, y, z, DetailLevel, pyriteQuery, this);
 
                     g.transform.localScale = new Vector3(
@@ -203,22 +215,31 @@
 
             if (CameraRig != null)
             {
-                DebugLog("Moving camera");
+                //DebugLog("Moving camera");
                 // Hardcoding some values for now
 
-                var min = new Vector3(pyriteLevel.ModelBoundsMin.x, pyriteLevel.ModelBoundsMin.y,
-                    pyriteLevel.ModelBoundsMin.z);
-                var max = new Vector3(pyriteLevel.ModelBoundsMax.x, pyriteLevel.ModelBoundsMax.y,
-                    pyriteLevel.ModelBoundsMax.z);
-                min += pyriteLevel.WorldCubeScale/2;
-                max -= pyriteLevel.WorldCubeScale/2;
-                var newCameraPosition = min + (max - min)/2.0f;
-                newCameraPosition += new Vector3(0, 0, (max - min).z*1.4f);
+                //var min = new Vector3(pyriteLevel.ModelBoundsMin.x, pyriteLevel.ModelBoundsMin.y,
+                //    pyriteLevel.ModelBoundsMin.z);
+                //var max = new Vector3(pyriteLevel.ModelBoundsMax.x, pyriteLevel.ModelBoundsMax.y,
+                //    pyriteLevel.ModelBoundsMax.z);
+
+                //min += pyriteLevel.WorldCubeScale/2;
+                //max -= pyriteLevel.WorldCubeScale/2;
+                //var newCameraPosition = min + (max - min)/2.0f;
                 
-                
+                //newCameraPosition += new Vector3(0, 0, (max - min).z*1.4f);                                                
                 //CameraRig.transform.position = newCameraPosition;
                 //CameraRig.transform.rotation = Quaternion.Euler(0, 180, 0);
                 //DebugLog("Done moving camera");
+
+                //var delta = pyriteLevel.ModelBoundsMax - pyriteLevel.ModelBoundsMin;
+                //var center = pyriteLevel.ModelBoundsMin + new Vector3(-delta.x / 2, delta.z /2 , -delta.y);
+                //CameraRig.transform.position = center;
+
+                Instantiate(RenderCubes);
+                RenderCubes.GetComponent<RenderCubes3D>().GridMinSize = (int)(pyriteLevel.WorldCubeScale.x / 3f);   // World Size cut to 3x3x3 Sections
+                RenderCubes.GetComponent<RenderCubes3D>().CreateCubeLayers(CameraRig.transform.position);
+
             }
             DebugLog("-Load()");
         }

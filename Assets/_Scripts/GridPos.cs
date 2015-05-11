@@ -46,4 +46,9 @@ public class GridPos
     {
         return String.Format("{0},{1},{2}", x, y, z);
     }
+
+    public Vector3 ToVector3()
+    {
+        return new Vector3((float)x, (float)y, (float)z);
+    }
 }
