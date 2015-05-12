@@ -4,6 +4,7 @@
     using System.Collections;
     using System.Collections.Generic;
     using System.Diagnostics;
+    using System.Linq;
     using Extensions;
     using Microsoft.Xna.Framework;
     using Model;
@@ -170,13 +171,12 @@
             var pyriteLevel =
                 pyriteQuery.DetailLevels[DetailLevel];
 
-         
-
             var allOctCubes = pyriteQuery.DetailLevels[DetailLevel].Octree.AllItems();
 
             foreach (var octCube in allOctCubes)
             {
                 var pCube = CreateCubeFromCubeBounds(octCube);
+
                 var x = pCube.X;
                 var y = pCube.Y;
                 var z = pCube.Z;
@@ -192,7 +192,8 @@
                             Instantiate(PlaceHolderCube, new Vector3(cubePos.x, cubePos.y, cubePos.z),
                                 Quaternion.identity);
 
-                    var loc = Instantiate(LocatorCube, new Vector3(cubePos.x, cubePos.y, cubePos.z), Quaternion.identity) as GameObject;
+                    //var loc = Instantiate(LocatorCube, new Vector3(cubePos.x, cubePos.y, cubePos.z), Quaternion.identity) as GameObject;
+                    var loc = Instantiate(LocatorCube, cubePos, Quaternion.identity) as GameObject;
                     loc.transform.parent = gameObject.transform;
                                         
 
@@ -236,8 +237,33 @@
                 //var center = pyriteLevel.ModelBoundsMin + new Vector3(-delta.x / 2, delta.z /2 , -delta.y);
                 //CameraRig.transform.position = center;
 
+                //var allOctCubes = pyriteQuery.DetailLevels[DetailLevel].Octree.AllItems();
+
+
+                // RPL CONVERSION
+                List<GridPos> gList = new List<GridPos>();
+                Dictionary<string, CubeBounds> gDict = new Dictionary<string, CubeBounds>();
+                foreach (var octCube in allOctCubes)
+                {
+                    var pCube = CreateCubeFromCubeBounds(octCube);
+
+                    var x = pCube.X;
+                    var y = pCube.Y;
+                    var z = pCube.Z;
+                    var gPos = new GridPos(x, y, z);
+                    gList.Add(gPos);
+                    gDict.Add(gPos.ToKeyString(), octCube);
+                }
+
+                int midIndex = gList.Count / 2;
+                var gMid = gList.OrderBy(n => n.x).ThenBy(n => n.y).ThenBy(n => n.z).ToList()[midIndex];
+                var cubeBound = CreateCubeFromCubeBounds(gDict[gMid.ToKeyString()]);
+                var cubeVector3 = pyriteLevel.GetWorldCoordinatesForCube(cubeBound);
+                CameraRig.transform.position = cubeVector3;
+
+                
                 Instantiate(RenderCubes);
-                RenderCubes.GetComponent<RenderCubes3D>().GridMinSize = (int)(pyriteLevel.WorldCubeScale.x / 3f);   // World Size cut to 3x3x3 Sections
+                RenderCubes.GetComponent<RenderCubes3D>().GridMinSize = (int)(pyriteQuery.DetailLevels[DetailLevel].WorldCubeScale.x);   // World Size cut to 3x3x3 Sections
                 RenderCubes.GetComponent<RenderCubes3D>().CreateCubeLayers(CameraRig.transform.position);
 
             }
