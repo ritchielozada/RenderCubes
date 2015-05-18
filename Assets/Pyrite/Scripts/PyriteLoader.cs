@@ -261,10 +261,14 @@
                 var cubeVector3 = pyriteLevel.GetWorldCoordinatesForCube(cubeBound);
                 CameraRig.transform.position = cubeVector3;
 
+                var r = Instantiate(LocatorCube, cubeVector3, Quaternion.identity) as GameObject;
+                r.GetComponent<MeshRenderer>().material.color = Color.green;
+                r.transform.localScale = new Vector3(12f, 12f, 12f);
+
                 
-                Instantiate(RenderCubes);
-                RenderCubes.GetComponent<RenderCubes3D>().GridMinSize = (int)(pyriteQuery.DetailLevels[DetailLevel].WorldCubeScale.x);   // World Size cut to 3x3x3 Sections
-                RenderCubes.GetComponent<RenderCubes3D>().CreateCubeLayers(CameraRig.transform.position);
+                //Instantiate(RenderCubes);
+                //RenderCubes.GetComponent<RenderCubes3D>().GridMinSize = (int)(pyriteQuery.DetailLevels[DetailLevel].WorldCubeScale.x);   // World Size cut to 3x3x3 Sections
+                //RenderCubes.GetComponent<RenderCubes3D>().CreateCubeLayers(CameraRig.transform.position);
 
             }
             DebugLog("-Load()");

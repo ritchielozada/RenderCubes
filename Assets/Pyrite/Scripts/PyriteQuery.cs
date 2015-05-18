@@ -34,7 +34,7 @@
         {
             if (!string.IsNullOrEmpty(apiUrl))
             {
-                Debug.Log("Overriding PyriteServer url to " + apiUrl);
+                //Debug.Log("Overriding PyriteServer url to " + apiUrl);
                 _apiUrl = apiUrl;
             }
             SetName = setName;
@@ -176,7 +176,7 @@
                 var parsedContent = JSON.Parse(loader.GetDecompressedText());
                 if (!parsedContent[StatusKey].Value.Equals(OkValue))
                 {
-                    Debug.LogError("Failure getting cube query against: " + cubesUrl);
+                    //Debug.LogError("Failure getting cube query against: " + cubesUrl);
                     yield break;
                 }
 
@@ -202,14 +202,14 @@
 
         private IEnumerator LoadMetadata()
         {
-            Debug.Log("Metadata query started against: " + _setUrl);
+            //Debug.Log("Metadata query started against: " + _setUrl);
             WWW loader = null;
             loader = WwwExtensions.CreateWWW(_setUrl);
             yield return loader;
             var parsedContent = JSON.Parse(loader.GetDecompressedText());
             if (!parsedContent[StatusKey].Value.Equals(OkValue))
             {
-                Debug.LogError("Failure getting set info for " + SetName);
+                //Debug.LogError("Failure getting set info for " + SetName);
                 yield break;
             }
             loader = WwwExtensions.CreateWWW(_versionUrl);
@@ -217,7 +217,7 @@
             parsedContent = JSON.Parse(loader.GetDecompressedText());
             if (!parsedContent[StatusKey].Value.Equals(OkValue))
             {
-                Debug.LogError("Failure getting set version info for " + SetName + " - " + Version);
+                //Debug.LogError("Failure getting set version info for " + SetName + " - " + Version);
                 yield break;
             }
             var parsedDetailLevels = parsedContent[ResultKey][DetailLevelsKey].AsArray;
@@ -276,7 +276,7 @@
                     detailLevel.WorldBoundsMax -
                     detailLevel.WorldBoundsMin;
             }
-            Debug.Log("Metadata query completed.");
+            //Debug.Log("Metadata query completed.");
         }
     }
 
