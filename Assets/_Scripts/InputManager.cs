@@ -3,8 +3,9 @@ using System.Collections;
 
 public class InputManager : MonoBehaviour
 {
-    float RotationDeltaRate = 90;
-    private float TranslationDeltaRate = 20.0f;
+    public float RotationDeltaRate = 90;
+    public float TranslationDeltaRate = 50.0f;
+
     private float camPitch = 0;
     private float yaw = 0;
     float move_x;
@@ -57,10 +58,6 @@ public class InputManager : MonoBehaviour
         transform.rotation = Quaternion.Lerp(transform.rotation, rigOrientation, Time.time);
         cameraOrientation.eulerAngles = new Vector3(LimitAngles(camPitch), transform.rotation.eulerAngles.y, 0);
         pivotCamera.transform.rotation = Quaternion.Lerp(pivotCamera.transform.rotation, cameraOrientation, Time.time);
-
-        var planePoint = transform.position;
-        planePoint.y = 0;
-        Debug.DrawLine(transform.position, planePoint, Color.green, 0f, true);
     }
 
     private static float LimitAngles(float angle)
