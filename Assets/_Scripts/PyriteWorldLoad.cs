@@ -59,7 +59,7 @@ public class PyriteWorldLoad : MonoBehaviour
             }
 
             var planePoint = CameraRig.transform.position;
-            planePoint.z = -500f;
+            planePoint.y = 0f;
             Debug.DrawLine(CameraRig.transform.position, planePoint, Color.green, 0f, true);
         }
     }
@@ -142,12 +142,13 @@ public class PyriteWorldLoad : MonoBehaviour
 
 
     void LoadCamCubes()
-    {
+    {        
+        Debug.Log(String.Format("Cube: ({0},{1},{2})", cubeCamPos.X, cubeCamPos.Y, cubeCamPos.Z));        
         var cubeCamVector = new Vector3(cubeCamPos.X + 0.5f, cubeCamPos.Y + 0.5f, cubeCamPos.Z + 0.5f);
+
         var minVector = cubeCamVector - Vector3.one;
-        var maxVector = cubeCamVector + Vector3.one;
-        
-        minVector.z = 0f; // HACK:  Hit the ground to see reference
+        var maxVector = cubeCamVector + Vector3.one;        
+        //minVector.z = 0f; // HACK:  Hit the ground to see reference
 
         var octIntCubes = pyriteLevel.Octree.AllIntersections(new BoundingBox(minVector, maxVector));
 

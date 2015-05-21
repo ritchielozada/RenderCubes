@@ -140,6 +140,79 @@ MonoBehaviour:
   UseUnlitShader: 1
   UseWww: 1
   MaxConcurrentRequests: 0
+--- !u!1 &134505800
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 134505804}
+  - 114: {fileID: 134505803}
+  - 114: {fileID: 134505802}
+  - 114: {fileID: 134505801}
+  m_Layer: 0
+  m_Name: EventSystem
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &134505801
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 134505800}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1997211142, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_AllowActivationOnStandalone: 0
+--- !u!114 &134505802
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 134505800}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1077351063, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_HorizontalAxis: Horizontal
+  m_VerticalAxis: Vertical
+  m_SubmitButton: Submit
+  m_CancelButton: Cancel
+  m_InputActionsPerSecond: 10
+  m_AllowActivationOnMobileDevice: 0
+--- !u!114 &134505803
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 134505800}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -619905303, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_FirstSelected: {fileID: 0}
+  m_sendNavigationEvents: 1
+  m_DragThreshold: 5
+--- !u!4 &134505804
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 134505800}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 6
 --- !u!1 &571800447
 GameObject:
   m_ObjectHideFlags: 0
@@ -236,7 +309,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1018594283}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: -400, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1243786989}
@@ -253,6 +326,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b37eaa09622b7e448c824d732eade90, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  RotationDeltaRate: 90
+  TranslationDeltaRate: 80
 --- !u!1 &1076652351
 GameObject:
   m_ObjectHideFlags: 0
@@ -463,14 +538,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0633530a2534c044994df2e366bb221d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  RenderCubes: {fileID: 0}
+  CameraRig: {fileID: 1018594283}
   ModelVersion: V1
   WorldLocatorCube: {fileID: 135038, guid: b647d534ae4393145999f3ed5c055874, type: 2}
   LocatorCube: {fileID: 184526, guid: 7dcc8c0f88410044aa5260177965882e, type: 2}
-  DetailLevel: 1
+  DetailLevel: 2
   PlaceHolderCube: {fileID: 135038, guid: b647d534ae4393145999f3ed5c055874, type: 2}
   PyriteServer: 
   SetName: 
+  MaxListCount: 100
   EnableDebugLogs: 0
   EnableDebugLogs2: 1
   UseCameraDetection: 1
