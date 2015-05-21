@@ -327,7 +327,7 @@
         public PyriteCube[] Cubes { get; set; }
         public OcTree<CubeBounds> Octree { get; set; }
 
-        public float YOffset = 452f;
+        public float YOffset = 457f;
 
         public Vector2 TextureCoordinatesForCube(float cubeX, float cubeY)
         {
@@ -345,9 +345,9 @@
             var yPos = WorldBoundsMin.y + WorldCubeScale.y * cube.Y + WorldCubeScale.y * 0.5f;
             var zPos = WorldBoundsMin.z + WorldCubeScale.z * cube.Z + WorldCubeScale.z * 0.5f;
 #else
-            var xPos = -(WorldBoundsMin.x + WorldCubeScale.x * cube.X + WorldCubeScale.x * 0.5f);
+            var xPos = (WorldBoundsMin.x + WorldCubeScale.x * cube.X + WorldCubeScale.x * 0.5f);
             var zPos = WorldBoundsMin.y + WorldCubeScale.y * cube.Y + WorldCubeScale.y * 0.5f;
-            var yPos = (WorldBoundsMin.z + WorldCubeScale.z * cube.Z + WorldCubeScale.z * 0.5f);
+            var yPos = (WorldBoundsMin.z + WorldCubeScale.z * cube.Z + WorldCubeScale.z * 0.5f) + YOffset;
 #endif
             return new Vector3(xPos, yPos, zPos);
         }
@@ -359,9 +359,11 @@
             var cy = (int)((pos.y - WorldBoundsMin.y) / WorldCubeScale.y);
             var cz = (int)((pos.z - WorldBoundsMin.z) / WorldCubeScale.z);
 #else
-            var cx = (int)((-pos.x - WorldBoundsMin.x) / WorldCubeScale.x);
-            var cz = (int)((pos.y - 320f - WorldBoundsMin.y) / WorldCubeScale.y);
-            var cy = (int)((pos.z + 320f - WorldBoundsMin.z) / WorldCubeScale.z);
+            var YZOffset = WorldBoundsMin.y - WorldBoundsMin.z;
+            var cx = (int)((pos.x - WorldBoundsMin.x) / WorldCubeScale.x);
+            var cz = (int)((pos.y - YOffset + YZOffset - WorldBoundsMin.y) / WorldCubeScale.y);
+            var cy = (int)((pos.z - YZOffset - WorldBoundsMin.z) / WorldCubeScale.z);
+    
 #endif
 
             return new PyriteCube() { X = cx, Y = cy, Z = cz };
