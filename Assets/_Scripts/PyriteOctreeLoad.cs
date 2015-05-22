@@ -9,7 +9,7 @@ using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Debug = UnityEngine.Debug;
 
-public class PyriteWorldLoad : MonoBehaviour
+public class PyriteOctreeLoad : MonoBehaviour
 {
     public GameObject CameraRig;
     public string ModelVersion = "V1";
